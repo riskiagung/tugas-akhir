@@ -1,2 +1,0 @@
-# tugas-akhir
-tugas akhir
