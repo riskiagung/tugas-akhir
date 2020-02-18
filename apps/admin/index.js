@@ -15,6 +15,7 @@ import logoImage from '../../images/logo3-02.png';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { ListItem } from 'react-native-elements';
+import { FlatList } from 'react-native-gesture-handler';
 
 class AdminScreen extends Component {
 	constructor() {
@@ -32,13 +33,10 @@ class AdminScreen extends Component {
 		const { log } = this.state;
 		firebase.database().ref().child('log').child('2020-01-17').on('value', (snapshot) => {
 			snapshot.forEach((childSnapshot) => {
-				if(log.some(e => e.username == childSnapshot.value()['username'])) {
-
-				} else {
-					log.push(childSnapshot.val());
-				}
+				log.push(childSnapshot.val());
 			})
-		})
+		});
+		console.log(log)
 	}
 
 	keyExtractor = (item, index) => index.toString();
@@ -46,7 +44,7 @@ class AdminScreen extends Component {
 	renderItem = ({ item }) => (
 		<ListItem
 			title={item.nama}
-			subtitle={item.tgl}
+			subtitle={item.jam}
 			leftAvatar={<Icon name='ios-contact' size={50} color={'rgba(0, 0, 0, 0.7)'} />}
 			bottomDivider
 			chevron
@@ -54,6 +52,19 @@ class AdminScreen extends Component {
 			// onPress
 		/>
 	)
+
+	renderSeparator = () => {
+		return (
+			<View
+				style= {{
+					height:1,
+					width: '100%',
+					backgroundColor: '#CED0CE',
+					marginLeft: '19.5%'
+				}}
+			/>
+		)
+	}
 
 	render () {
 		this.openLog();
@@ -70,7 +81,13 @@ class AdminScreen extends Component {
 						<Text style={styles.headerText}>Log pintu terbuka</Text>
 					</View>
 					<View style={styles.listContainer}>
-						
+						<FlatList
+							keyExtractor={this.keyExtractor}
+							data={this.state.log}
+							renderItem={this.renderItem}
+							style={styles.itemListContainer}
+							ItemSeparatorComponent={this.renderSeparator}
+						/>
 					</View>
                 </View>
 				<TouchableOpacity style={styles.btnRegister} onPress={() => this.props.navigation.navigate('List')}>
