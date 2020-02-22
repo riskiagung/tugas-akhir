@@ -5,24 +5,34 @@ import {
 	Text,
 	View,
 	Image,
+	RefreshControl,
 } from 'react-native';
 
 import firebase from 'firebase';
 
 import bgImage from '../../images/bg-01.png';
 import logoImage from '../../images/logo3-02.png';
+import lockImg from '../../images/lock.png';
 
 import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { ListItem } from 'react-native-elements';
 import { FlatList } from 'react-native-gesture-handler';
+import DatePicker from 'react-native-datepicker';
 
 class AdminScreen extends Component {
 	constructor() {
 		super();
 		this.state = {
 			log: [],
+			refreshing: false,
+			date: "2020-01-01"
 		}
+	}
+
+	_onRefresh = () => {
+		this.setState({refreshing: true});
+		this.setState({refreshing: false});
 	}
 
 	static navigationOptions = {
@@ -31,12 +41,15 @@ class AdminScreen extends Component {
 	
 	openLog = () => {
 		const { log } = this.state;
-		firebase.database().ref().child('log').child('2020-01-17').on('value', (snapshot) => {
+		firebase.database().ref().child('log').child(this.state.date).once('value', (snapshot) => {
 			snapshot.forEach((childSnapshot) => {
-				log.push(childSnapshot.val());
+				if(log.some(e => e.jam == childSnapshot.val()['jam'])) {
+
+				} else {
+					log.push(childSnapshot.val());
+				}
 			})
 		});
-		console.log(log)
 	}
 
 	keyExtractor = (item, index) => index.toString();
@@ -45,7 +58,7 @@ class AdminScreen extends Component {
 		<ListItem
 			title={item.nama}
 			subtitle={item.jam}
-			leftAvatar={<Icon name='ios-contact' size={50} color={'rgba(0, 0, 0, 0.7)'} />}
+			leftAvatar={<Icon name='md-contact' size={50} color={'rgba(0, 0, 0, 0.7)'} />}
 			bottomDivider
 			chevron
 			containerStyle={{ borderBottomWidth: 0, padding: 10, }}
@@ -66,8 +79,14 @@ class AdminScreen extends Component {
 		)
 	}
 
+	componentDidMount() {
+		var date = new Date().getDate();
+		var month = new Date().getMonth()+1;
+		var year = new Date().getFullYear();
+		this.setState({date: year + "-" + month + "-" + date});
+	}
+
 	render () {
-		this.openLog();
 		return (
 			<ImageBackground source={bgImage} style={styles.backgroundContainer}>
 				<View style={styles.navContainer}>
@@ -79,9 +98,45 @@ class AdminScreen extends Component {
 				<View style={styles.table}>
 					<View style={styles.headerContainer}>
 						<Text style={styles.headerText}>Log pintu terbuka</Text>
+						<DatePicker
+							style={styles.datePicker}
+							date={this.state.date}
+							mode="date"
+							placeholder="select date"
+							format="YYYY-MM-DD"
+							minDate="2020-01-01"
+							confirmBtnText="Confirm"
+							cancelBtnText="Cancel"
+							customStyles={{
+								dateIcon: {
+									position: 'absolute',
+									left: 0,
+									top: 4,
+									marginLeft: 0,
+								},
+								dateInput: {
+									marginLeft: 36,
+								}
+							}}
+							onDateChange={(date) => {
+								this.setState({date: date, log: []});
+								this.openLog();
+								setTimeout(() => {
+									this.setState({refreshing: true});
+									this.setState({refreshing: false});
+								}, 500);
+								// this._onRefresh();
+							}}
+						/>
 					</View>
 					<View style={styles.listContainer}>
 						<FlatList
+							refreshControl={
+								<RefreshControl
+									refreshing={this.state.refreshing}
+									onRefresh={this._onRefresh}
+								/>
+							}
 							keyExtractor={this.keyExtractor}
 							data={this.state.log}
 							renderItem={this.renderItem}
@@ -90,11 +145,17 @@ class AdminScreen extends Component {
 						/>
 					</View>
                 </View>
+				<TouchableOpacity style={styles.btnPintu} onPress={() => this.props.navigate('Door')}>
+					<Image 
+						source={lockImg}
+						style={styles.lockImg}
+					/>
+				</TouchableOpacity>
 				<TouchableOpacity style={styles.btnRegister} onPress={() => this.props.navigation.navigate('List')}>
 					<Icon 
-						name={'ios-contact'}
+						name={'md-contact'}
 						size={70}
-						color={'red'}
+						color={'#16a085'}
 					/>
 				</TouchableOpacity>
 			</ImageBackground>

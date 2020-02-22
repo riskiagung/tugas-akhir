@@ -14,9 +14,10 @@ const styles = StyleSheet.create({
 		right: 30,
 		bottom: 23,
 	},
-	textRegister: {
-		color: 'white',
-		fontSize: 16,
+	btnPintu: {
+		position: 'absolute',
+		bottom: 23,
+		right:100,
 	},
 	navContainer: {
 		flexDirection: 'row',
@@ -50,14 +51,26 @@ const styles = StyleSheet.create({
 	headerContainer: {
 		// backgroundColor: 'yellow',
 		alignItems: 'center',
+		justifyContent: 'space-around',
+		flexDirection: 'row'
 	},
 	headerText: {
 		fontSize: 16,
 		fontFamily: 'Poppins-Regular',
+		// backgroundColor: 'red',
+	},
+	datePicker: {
+		width: 150,
+		// backgroundColor: 'yellow',
 	},
 	listContainer: {
 		// backgroundColor: 'red',
 		flex: 1,
+	},
+	lockImg: {
+		height: 57,
+		width: 57,
+		marginBottom: 6,
 	},
 });
 

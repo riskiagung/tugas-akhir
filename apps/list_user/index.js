@@ -63,7 +63,7 @@ class ListScreen extends Component {
         <ListItem
             title={item.nama}
             subtitle={`username: ${item.username}`}
-            leftAvatar={<Icon name='ios-contact' size={50} color={'rgba(0, 0, 0, 0.7)'} />}
+            leftAvatar={<Icon name='md-contact' size={50} color={'rgba(0, 0, 0, 0.7)'} />}
             bottomDivider
             chevron
             containerStyle={{ borderBottomWidth: 0, padding: 10 }}
@@ -109,7 +109,7 @@ class ListScreen extends Component {
                     <Icon 
                         name={'ios-add-circle'}
                         size={70}
-                        color={'red'}
+                        color={'#16a085'}
                     />
                 </TouchableOpacity>
             </ImageBackground>

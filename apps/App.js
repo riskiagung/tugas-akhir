@@ -9,6 +9,7 @@ import AdminScreen from './admin/index';
 import RegisterScreen from './register/index';
 import ListScreen from './list_user/index';
 import UserDetailScreen from './user_detail/index';
+import DoorScreen from './door/index';
 import { AsyncStorage, View } from 'react-native';
 
 Firebase.auth().signInWithEmailAndPassword('riski97@gmail.com', 'sug1mun4');
@@ -31,6 +32,7 @@ const RootStack = createStackNavigator(
 		List: ListScreen,
 		Register: RegisterScreen,
 		UserDetail: UserDetailScreen,
+		Door: DoorScreen,
 	},
 	{
 		initialRouteName: 'Login',
