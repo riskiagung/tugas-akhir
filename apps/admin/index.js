@@ -145,7 +145,7 @@ class AdminScreen extends Component {
 						/>
 					</View>
                 </View>
-				<TouchableOpacity style={styles.btnPintu} onPress={() => this.props.navigate('Door')}>
+				<TouchableOpacity style={styles.btnPintu} onPress={() => this.props.navigation.navigate('Door')}>
 					<Image 
 						source={lockImg}
 						style={styles.lockImg}

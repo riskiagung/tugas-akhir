@@ -4,43 +4,58 @@ import {
 	Text,
 	ImageBackground,
 	Image,
-	TextInput,
 	TouchableOpacity,
 	StatusBar,
 } from 'react-native';
 import firebase from '../firebase'
-import Dialog, { DialogContent, ScaleAnimation } from 'react-native-popup-dialog';
 
 import styles from './styles';
 
 import bgImage from '../../images/bg-01.png';
 import logoImage from '../../images/logo3-02.png';
-import Icon from 'react-native-vector-icons/Ionicons';
+import pintuImg from '../../images/pintu-01.png';
+import pintu2Img from '../../images/pintu2-01.png';
 
 
-class UserDetailScreen extends Component {
+class DoorScreen extends Component {
 	static navigationOptions = {
         headerShown: false
     }
 	constructor() {
 		super()
 		this.state = {
-			showPass: true,
-			press: false,
-			buttonText: 'Delete User'
+			gambar: pintuImg,
+			buttonText: 'Buka Kunci Pintu',
+			btnContainer: styles.btnDelete,
+			btnText: styles.textDelete,
+			solenoid: '0',
 		}
 	}
 
-	// onDeletePress = () => {
-		
-	// }
-
-	showPass = () => {
-		if (this.state.press == false) {
-			this.setState({ showPass: false, press: true })
-		} else {
-			this.setState({ showPass: true, press: false })
-		}
+	open = () => {
+		const { solenoid } = this.state;
+		if (this.state.gambar == pintuImg) {
+			this.setState({ gambar: pintu2Img, buttonText: 'Pintu Terbuka', btnContainer: styles.btnDelete2, btnText: styles.textDelete2, solenoid: '1' })
+			firebase.database().ref().set({
+				solenoid
+			}).then(()=>{
+				
+			}).catch(()=>{
+				
+			});
+		};
+		setTimeout(() => {
+			if (this.state.gambar == pintu2Img) {
+				this.setState({ gambar: pintuImg, buttonText: 'Buka Kunci Pintu', btnContainer: styles.btnDelete, btnText: styles.textDelete, solenoid: '0' })
+			};
+			firebase.database().ref().set({
+				solenoid
+			}).then(()=>{
+				
+			}).catch(()=>{
+				
+			});
+		}, 5000);
 	}
 
 	render () {
@@ -52,100 +67,16 @@ class UserDetailScreen extends Component {
 					<Image source={logoImage} style={styles.logo} />
 				</View>
 
-				<View style={styles.inputContainer}>
-					<Icon
-						name={'ios-contact'}
-						size={28}
-						color={'white'}
-						style={styles.inputIcon}
-					/>
-
-					<TextInput
-						style={styles.input}
-						underlineColorAndroid='transparent'
-						value={`Username:\t ${navigation.getParam('username')}`}
-						editable={false}
-					/>
+				<View style={styles.pintuContainer}>
+					<Image source={this.state.gambar} style={styles.pintuImage} />
 				</View>
 
-				<View style={styles.inputContainer}>
-					<Icon
-						name={'ios-contact'}
-						size={28}
-						color={'white'}
-						style={styles.inputIcon}
-					/>
-
-					<TextInput
-						style={styles.input}
-						underlineColorAndroid='transparent'
-						value={`Nama:\t ${navigation.getParam('nama')}`}
-						editable={false}
-					/>
-				</View>
-
-				<View style={styles.inputContainer}>
-					<Icon
-						name={'ios-finger-print'}
-						size={28}
-						color={'white'}
-						style={styles.inputIcon}
-					/>
-
-					<TextInput
-						style={styles.input}
-						secureTextEntry={this.state.showPass}
-						underlineColorAndroid='transparent'
-						value={navigation.getParam('password')}
-						editable={false}
-					/>
-
-					<TouchableOpacity style={styles.btnEye} onPress={this.showPass.bind(this)}>
-						<Icon
-							name={this.state.press == false ? 'ios-eye':'ios-eye-off'}
-							size={26}
-							color={'white'}
-						/>
-					</TouchableOpacity>
-				</View>
-
-				<View>
-					<Text style={styles.text}>untuk melihat password silahkan klik tanda mata</Text>
-				</View>
-
-				<TouchableOpacity style={styles.btnDelete} onPress={() => {this.setState({error: '', buttonText: 'Wait', visible: true})}}>
-					<Text style={styles.textDelete}>{this.state.buttonText}</Text>
+				<TouchableOpacity style={this.state.btnContainer} onPress={this.open}>
+					<Text style={this.state.btnText}>{this.state.buttonText}</Text>
 				</TouchableOpacity>
-				
-				<Dialog
-					visible={this.state.visible}
-					dialogAnimation={new ScaleAnimation({
-						initialValue: 0,
-						useNativeDriver: true,
-					})}
-					onTouchOutside={() => {this.setState({ visible: false, buttonText: 'Delete User' });}}
-				>
-					<DialogContent style={styles.dialogContainer}>
-						<View style={styles.textContainer}>
-							<Text style={styles.textDialog}>Apakah anda yakin untuk menghapus penghuni ini?</Text>
-						</View>
-						<View style={styles.btnContainer}>
-							<TouchableOpacity style={styles.btnCancel} onPress={() => {this.setState({visible: false, buttonText: 'Delete User'})}}>
-								<Text>Cancel</Text>
-							</TouchableOpacity>
-							<TouchableOpacity style={styles.btnYakin} onPress={() => {
-								firebase.database().ref().child('User/'+navigation.getParam('username')).remove();
-								this.props.navigation.navigate('List');
-								this.setState({ visible: false });
-							}}>
-								<Text style={{color: 'white'}}>Yakin</Text>
-							</TouchableOpacity>
-						</View>
-					</DialogContent>
-				</Dialog>
 			</ImageBackground>
 		);
 	}
 }
 
-export default UserDetailScreen
+export default DoorScreen
