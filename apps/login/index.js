@@ -77,9 +77,16 @@ class LoginScreen extends Component {
 		} else {
 			for (const [key, value] of Object.entries(users)) {
 				if(username == value['username'] && password == value['password']) {
-					this.props.navigation.navigate('Penghuni', {
-						nama: value['nama'],
-					});
+					if(username == 'admin') {
+						this.props.navigation.navigate('Admin', {
+							nama: value['nama'],
+						});
+					} else {
+						this.props.navigation.navigate('Penghuni', {
+							nama: value['nama'],
+						});
+					}
+					
 					this.setLoginID(value['nama']);
 					break;
 				}

@@ -78,7 +78,9 @@ class DoorScreen extends Component {
 					<Text style={this.state.btnText}>{this.state.buttonText}</Text>
 				</TouchableOpacity>
 
-                <TouchableOpacity style={styles.btnContainerLog}>
+                <TouchableOpacity style={styles.btnContainerLog} onPress={() => this.props.navigation.navigate('Log', {
+					nama: this.props.navigation.state.params.nama,
+				})}>
 					<Text style={styles.btnTextLog}>Log</Text>
 				</TouchableOpacity>
 			</ImageBackground>
