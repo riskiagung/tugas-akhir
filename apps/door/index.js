@@ -28,15 +28,16 @@ class DoorScreen extends Component {
 			buttonText: 'Buka Kunci Pintu',
 			btnContainer: styles.btnDelete,
 			btnText: styles.textDelete,
-			solenoid: '0',
 		}
 	}
 
 	open = () => {
-		const { solenoid } = this.state;
+		// const { solenoid } = this.state;
 		if (this.state.gambar == pintuImg) {
-			this.setState({ gambar: pintu2Img, buttonText: 'Pintu Terbuka', btnContainer: styles.btnDelete2, btnText: styles.textDelete2, solenoid: '1' })
-			firebase.database().ref().set({
+			this.setState({ gambar: pintu2Img, buttonText: 'Pintu Terbuka', btnContainer: styles.btnDelete2, btnText: styles.textDelete2 });
+			// console.log(solenoid);
+			var solenoid = '1';
+			firebase.database().ref().child('solenoid').set({
 				solenoid
 			}).then(()=>{
 				
@@ -46,15 +47,17 @@ class DoorScreen extends Component {
 		};
 		setTimeout(() => {
 			if (this.state.gambar == pintu2Img) {
-				this.setState({ gambar: pintuImg, buttonText: 'Buka Kunci Pintu', btnContainer: styles.btnDelete, btnText: styles.textDelete, solenoid: '0' })
+				this.setState({ gambar: pintuImg, buttonText: 'Buka Kunci Pintu', btnContainer: styles.btnDelete, btnText: styles.textDelete });
+				// console.log(solenoid);
+				var solenoid = '0';
+				firebase.database().ref().child('solenoid').set({
+					solenoid
+				}).then(()=>{
+					
+				}).catch(()=>{
+					
+				});
 			};
-			firebase.database().ref().set({
-				solenoid
-			}).then(()=>{
-				
-			}).catch(()=>{
-				
-			});
 		}, 5000);
 	}
 

@@ -70,12 +70,14 @@ class LoginScreen extends Component {
 		this.setState({error: '', buttonText: 'Wait'});
 		const{ username, password, users } = this.state;
 
+		console.log(users);
+
 		if(username == '' || password == '') {
 			this.setState({ error: 'Mohon masukkan Email dan Password', buttonText: 'Login' })
 		} else {
 			for (const [key, value] of Object.entries(users)) {
 				if(username == value['username'] && password == value['password']) {
-					this.props.navigation.navigate('Admin', {
+					this.props.navigation.navigate('Penghuni', {
 						nama: value['nama'],
 					});
 					this.setLoginID(value['nama']);
