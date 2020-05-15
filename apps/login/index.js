@@ -84,6 +84,7 @@ class LoginScreen extends Component {
 					} else {
 						this.props.navigation.navigate('Penghuni', {
 							nama: value['nama'],
+							username: value['username'],
 						});
 					}
 					

@@ -28,11 +28,27 @@ class DoorScreen extends Component {
 			buttonText: 'Buka Kunci Pintu',
 			btnContainer: styles.btnDelete,
 			btnText: styles.textDelete,
+			date: '2020-01-01',
+			jam: '00:01',
+			month: '1',
 		}
 	}
 
 	open = () => {
 		// const { solenoid } = this.state;
+		var date = new Date().getDate();
+		var month = new Date().getMonth()+1;
+		var year = new Date().getFullYear();
+		var hours = new Date().getHours();
+		var min = new Date().getMinutes();
+		var sec = new Date().getSeconds();
+		this.setState({ month: month });
+		if(this.state.month.length == 1){
+			this.setState({ date: year + "-0" + month + "-" + date });
+		} else {
+			this.setState({ date: year + "-" + month + "-" + date });
+		};
+		this.setState({ jam: hours + ":" + min + ":" + sec });
 		if (this.state.gambar == pintuImg) {
 			this.setState({ gambar: pintu2Img, buttonText: 'Pintu Terbuka', btnContainer: styles.btnDelete2, btnText: styles.textDelete2 });
 			// console.log(solenoid);
@@ -40,7 +56,12 @@ class DoorScreen extends Component {
 			firebase.database().ref().child('solenoid').set({
 				solenoid
 			}).then(()=>{
-				
+				firebase.database().ref().child('log').child(this.state.date).child(this.props.navigation.state.params.username).child(this.state.jam).set({
+					username: this.props.navigation.state.params.username,
+					nama: this.props.navigation.state.params.nama,
+					jam: this.state.jam,
+					tgl: this.state.date,
+				})
 			}).catch(()=>{
 				
 			});
@@ -80,6 +101,7 @@ class DoorScreen extends Component {
 
                 <TouchableOpacity style={styles.btnContainerLog} onPress={() => this.props.navigation.navigate('Log', {
 					nama: this.props.navigation.state.params.nama,
+					username: this.props.navigation.state.params.username,
 				})}>
 					<Text style={styles.btnTextLog}>Log</Text>
 				</TouchableOpacity>

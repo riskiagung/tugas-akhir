@@ -26,13 +26,15 @@ class AdminScreen extends Component {
 		this.state = {
 			log: [],
 			refreshing: false,
-			date: "2020-01-01"
+			date: "2020-01-01",
+			month: '0',
 		}
 	}
 
 	_onRefresh = () => {
 		this.setState({refreshing: true});
 		this.setState({refreshing: false});
+		console.log(this.state.log);
 	}
 
 	static navigationOptions = {
@@ -41,14 +43,13 @@ class AdminScreen extends Component {
 	
 	openLog = () => {
 		const { log } = this.state;
-		firebase.database().ref().child('log').child(this.state.date).once('value', (snapshot) => {
+		firebase.database().ref().child('log').child(this.state.date).child(this.props.navigation.state.params.username).once('value', (snapshot) => {
 			snapshot.forEach((childSnapshot) => {
-				if(log.some(e => e.jam == childSnapshot.val()['jam'])) {
-
-				} else {
-					log.push(childSnapshot.val());
-				}
+				log.push(childSnapshot.val());
 			})
+			console.log(this.state.date);
+			// console.log(this.props.navigation.state.params.username);
+			// console.log(snapshot.val());
 		});
 	}
 
@@ -57,7 +58,7 @@ class AdminScreen extends Component {
 	renderItem = ({ item }) => (
 		<ListItem
 			title={item.nama}
-			subtitle={item.jam}
+			subtitle={'Pukul ' + item.jam}
 			leftAvatar={<Icon name='md-contact' size={50} color={'rgba(0, 0, 0, 0.7)'} />}
 			bottomDivider
 			chevron
@@ -83,7 +84,19 @@ class AdminScreen extends Component {
 		var date = new Date().getDate();
 		var month = new Date().getMonth()+1;
 		var year = new Date().getFullYear();
-		this.setState({date: year + "-" + month + "-" + date});
+		this.setState({ month: month });
+		if(this.state.month.length == 1){
+			this.setState({ date: year + "-0" + month + "-" + date });
+		} else {
+			this.setState({ date: year + "-" + month + "-" + date });
+		};
+		setTimeout(() => {
+			this.openLog();
+		}, 100);
+		setTimeout(() => {
+			this.setState({refreshing: true});
+			this.setState({refreshing: false});
+		}, 100);
 	}
 
 	render () {
@@ -145,19 +158,6 @@ class AdminScreen extends Component {
 						/>
 					</View>
                 </View>
-				<TouchableOpacity style={styles.btnPintu} onPress={() => this.props.navigation.navigate('Door')}>
-					<Image 
-						source={lockImg}
-						style={styles.lockImg}
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.btnRegister} onPress={() => this.props.navigation.navigate('List')}>
-					<Icon 
-						name={'md-contact'}
-						size={70}
-						color={'#16a085'}
-					/>
-				</TouchableOpacity>
 			</ImageBackground>
 		);
 	}
