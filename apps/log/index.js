@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
 	ImageBackground,
-	TouchableOpacity,
 	Text,
 	View,
 	Image,
@@ -12,7 +11,6 @@ import firebase from 'firebase';
 
 import bgImage from '../../images/bg-01.png';
 import logoImage from '../../images/logo3-02.png';
-import lockImg from '../../images/lock.png';
 
 import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -27,14 +25,13 @@ class AdminScreen extends Component {
 			log: [],
 			refreshing: false,
 			date: "2020-01-01",
-			month: '0',
 		}
 	}
 
 	_onRefresh = () => {
 		this.setState({refreshing: true});
 		this.setState({refreshing: false});
-		console.log(this.state.log);
+		// console.log(this.state.log);
 	}
 
 	static navigationOptions = {
@@ -43,11 +40,20 @@ class AdminScreen extends Component {
 	
 	openLog = () => {
 		const { log } = this.state;
+		var a = this.state.date.split('-');
+		if(a[1].length == 1) {
+			if(a[2].length == 1) {
+				this.setState({ date: a[0] + '-0' + a[1] + '-0' + a[2] });
+			} else {
+				this.setState({ date: a[0] + '-0' + a[1] + '-' + a[2] });
+			}
+		};
+		// console.log(this.state.date);
 		firebase.database().ref().child('log').child(this.state.date).child(this.props.navigation.state.params.username).once('value', (snapshot) => {
 			snapshot.forEach((childSnapshot) => {
 				log.push(childSnapshot.val());
 			})
-			console.log(this.state.date);
+			// console.log(this.state.date);
 			// console.log(this.props.navigation.state.params.username);
 			// console.log(snapshot.val());
 		});
@@ -84,12 +90,7 @@ class AdminScreen extends Component {
 		var date = new Date().getDate();
 		var month = new Date().getMonth()+1;
 		var year = new Date().getFullYear();
-		this.setState({ month: month });
-		if(this.state.month.length == 1){
-			this.setState({ date: year + "-0" + month + "-" + date });
-		} else {
-			this.setState({ date: year + "-" + month + "-" + date });
-		};
+		this.setState({ date: year + "-" + month + "-" + date });
 		setTimeout(() => {
 			this.openLog();
 		}, 100);

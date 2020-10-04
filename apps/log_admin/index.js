@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
 	ImageBackground,
-	TouchableOpacity,
 	Text,
 	View,
 	Image,
@@ -12,7 +11,6 @@ import firebase from 'firebase';
 
 import bgImage from '../../images/bg-01.png';
 import logoImage from '../../images/logo3-02.png';
-import lockImg from '../../images/lock.png';
 
 import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -20,19 +18,20 @@ import { ListItem } from 'react-native-elements';
 import { FlatList } from 'react-native-gesture-handler';
 import DatePicker from 'react-native-datepicker';
 
-class AdminScreen extends Component {
+class LogAdminScreen extends Component {
 	constructor() {
 		super();
 		this.state = {
 			log: [],
 			refreshing: false,
-			date: "2020-01-01"
+			date: "2020-01-01",
 		}
 	}
 
 	_onRefresh = () => {
 		this.setState({refreshing: true});
 		this.setState({refreshing: false});
+		// console.log(this.state.log);
 	}
 
 	static navigationOptions = {
@@ -49,17 +48,18 @@ class AdminScreen extends Component {
 				this.setState({ date: a[0] + '-0' + a[1] + '-' + a[2] });
 			}
 		};
-		firebase.database().ref().child('log').child(this.state.date).once('value', (snapshot) => {
+		// console.log(this.state.date);
+		firebase.database().ref().child('log').child(this.state.date).child(this.props.navigation.state.params.username).once('value', (snapshot) => {
 			snapshot.forEach((childSnapshot) => {
-				// if(log.some(e => e.jam == childSnapshot.val()['jam'])) {
-
-				// } else {
-					log.push(childSnapshot.val());
-				// }
+                if(typeof childSnapshot.val() !== typeof ""){
+                    log.push(childSnapshot.val());
+                }
 			})
-			console.log(snapshot.val());
-			console.log(this.state.date);
-		});
+			// console.log(this.state.date);
+			// console.log(this.props.navigation.state.params.username);
+            console.log(snapshot.val());
+            // console.log(this.state.log);
+        });
 	}
 
 	keyExtractor = (item, index) => index.toString();
@@ -67,15 +67,12 @@ class AdminScreen extends Component {
 	renderItem = ({ item }) => (
 		<ListItem
 			title={item.nama}
-			subtitle={item.jam}
+			subtitle={'Pukul ' + item.jam}
 			leftAvatar={<Icon name='md-contact' size={50} color={'rgba(0, 0, 0, 0.7)'} />}
 			bottomDivider
 			chevron
 			containerStyle={{ borderBottomWidth: 0, padding: 10, }}
-			onPress={() => this.props.navigation.navigate('LogAdmin', {
-				nama: item.nama,
-				username: item.username,
-            })}
+			// onPress
 		/>
 	)
 
@@ -96,7 +93,7 @@ class AdminScreen extends Component {
 		var date = new Date().getDate();
 		var month = new Date().getMonth()+1;
 		var year = new Date().getFullYear();
-		this.setState({date: year + "-" + month + "-" + date});
+		this.setState({ date: year + "-" + month + "-" + date });
 		setTimeout(() => {
 			this.openLog();
 		}, 100);
@@ -165,22 +162,9 @@ class AdminScreen extends Component {
 						/>
 					</View>
                 </View>
-				<TouchableOpacity style={styles.btnPintu} onPress={() => this.props.navigation.navigate('Door')}>
-					<Image 
-						source={lockImg}
-						style={styles.lockImg}
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.btnRegister} onPress={() => this.props.navigation.navigate('List')}>
-					<Icon 
-						name={'md-contact'}
-						size={70}
-						color={'#16a085'}
-					/>
-				</TouchableOpacity>
 			</ImageBackground>
 		);
 	}
 }
 
-export default AdminScreen
+export default LogAdminScreen

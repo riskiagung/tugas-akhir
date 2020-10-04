@@ -29,8 +29,9 @@ class DoorScreen extends Component {
 			btnContainer: styles.btnDelete,
 			btnText: styles.textDelete,
 			date: '2020-01-01',
-			jam: '00:01',
-			month: '1',
+			jam: '00:00:00',
+			month: '0',
+			day: '0',
 		}
 	}
 
@@ -42,12 +43,7 @@ class DoorScreen extends Component {
 		var hours = new Date().getHours();
 		var min = new Date().getMinutes();
 		var sec = new Date().getSeconds();
-		this.setState({ month: month });
-		if(this.state.month.length == 1){
-			this.setState({ date: year + "-0" + month + "-" + date });
-		} else {
-			this.setState({ date: year + "-" + month + "-" + date });
-		};
+		this.setState({ date: year + "-" + month + "-" + date });
 		this.setState({ jam: hours + ":" + min + ":" + sec });
 		if (this.state.gambar == pintuImg) {
 			this.setState({ gambar: pintu2Img, buttonText: 'Pintu Terbuka', btnContainer: styles.btnDelete2, btnText: styles.textDelete2 });
@@ -56,12 +52,35 @@ class DoorScreen extends Component {
 			firebase.database().ref().child('solenoid').set({
 				solenoid
 			}).then(()=>{
+				var a = this.state.date.split('-');
+				if(a[1].length == 1) {
+					if(a[2].length == 1) {
+						this.setState({ date: a[0] + '-0' + a[1] + '-0' + a[2] });
+					} else {
+						this.setState({ date: a[0] + '-0' + a[1] + '-' + a[2] });
+					}
+				};
+				console.log(this.state.jam);
+				// var b = this.state.jam.split('-');
+				// if(b[0].length == 1) {
+				// 	b[0] = '0' + b[0]
+				// };
+				// if(b[1].length == 1) {
+				// 	b[1] = '0' + b[1]
+				// };
+				// if(b[2].length == 1) {
+				// 	b[2] = '0' + b[2]
+				// };
+				// this.setState({ jam: b[0] + ':' + b[1] + ':' + b[2]});
+				// firebase.database().ref().child('log').child(this.state.date).child(this.props.navigation.state.params.username).set({
+				// 	nama: this.props.navigation.state.params.nama,
+				// });
 				firebase.database().ref().child('log').child(this.state.date).child(this.props.navigation.state.params.username).child(this.state.jam).set({
 					username: this.props.navigation.state.params.username,
 					nama: this.props.navigation.state.params.nama,
 					jam: this.state.jam,
 					tgl: this.state.date,
-				})
+				});
 			}).catch(()=>{
 				
 			});
