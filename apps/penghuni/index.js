@@ -6,6 +6,7 @@ import {
 	Image,
 	TouchableOpacity,
 	StatusBar,
+	AsyncStorage,
 } from 'react-native';
 import firebase from '../firebase'
 
@@ -32,6 +33,7 @@ class DoorScreen extends Component {
 			jam: '00:00:00',
 			month: '0',
 			day: '0',
+			count: 1,
 		}
 	}
 
@@ -45,6 +47,8 @@ class DoorScreen extends Component {
 		var sec = new Date().getSeconds();
 		this.setState({ date: year + "-" + month + "-" + date });
 		this.setState({ jam: hours + ":" + min + ":" + sec });
+		AsyncStorage.setItem('count', 1);
+		AsyncStorage.getItem('count').then((value) => console.log(value) );
 		if (this.state.gambar == pintuImg) {
 			this.setState({ gambar: pintu2Img, buttonText: 'Pintu Terbuka', btnContainer: styles.btnDelete2, btnText: styles.textDelete2 });
 			// console.log(solenoid);
@@ -61,6 +65,7 @@ class DoorScreen extends Component {
 					}
 				};
 				console.log(this.state.jam);
+				
 				// var b = this.state.jam.split('-');
 				// if(b[0].length == 1) {
 				// 	b[0] = '0' + b[0]
@@ -75,12 +80,13 @@ class DoorScreen extends Component {
 				// firebase.database().ref().child('log').child(this.state.date).child(this.props.navigation.state.params.username).set({
 				// 	nama: this.props.navigation.state.params.nama,
 				// });
-				firebase.database().ref().child('log').child(this.state.date).child(this.props.navigation.state.params.username).child(this.state.jam).set({
+				firebase.database().ref().child('log').child(this.state.date).child(this.props.navigation.state.params.username).child(this.state.count).set({
 					username: this.props.navigation.state.params.username,
 					nama: this.props.navigation.state.params.nama,
 					jam: this.state.jam,
 					tgl: this.state.date,
 				});
+				this.state.count = this.state.count + 1;
 			}).catch(()=>{
 				
 			});

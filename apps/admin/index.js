@@ -66,15 +66,15 @@ class AdminScreen extends Component {
 
 	renderItem = ({ item }) => (
 		<ListItem
-			title={item.nama}
-			subtitle={item.jam}
+			title={item['1'].nama}
+			// subtitle={item.jam}
 			leftAvatar={<Icon name='md-contact' size={50} color={'rgba(0, 0, 0, 0.7)'} />}
 			bottomDivider
 			chevron
 			containerStyle={{ borderBottomWidth: 0, padding: 10, }}
 			onPress={() => this.props.navigation.navigate('LogAdmin', {
-				nama: item.nama,
-				username: item.username,
+				nama: item['1'].nama,
+				username: item['1'].username,
             })}
 		/>
 	)

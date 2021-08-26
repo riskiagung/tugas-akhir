@@ -51,9 +51,9 @@ class LogAdminScreen extends Component {
 		// console.log(this.state.date);
 		firebase.database().ref().child('log').child(this.state.date).child(this.props.navigation.state.params.username).once('value', (snapshot) => {
 			snapshot.forEach((childSnapshot) => {
-                if(typeof childSnapshot.val() !== typeof ""){
+                // if(typeof childSnapshot.val() !== typeof ""){
                     log.push(childSnapshot.val());
-                }
+                // }
 			})
 			// console.log(this.state.date);
 			// console.log(this.props.navigation.state.params.username);
@@ -66,8 +66,9 @@ class LogAdminScreen extends Component {
 
 	renderItem = ({ item }) => (
 		<ListItem
-			title={item.nama}
-			subtitle={'Pukul ' + item.jam}
+			// title={item.nama}
+			title={item.jam}
+			// subtitle={'Pukul ' + item.jam}
 			leftAvatar={<Icon name='md-contact' size={50} color={'rgba(0, 0, 0, 0.7)'} />}
 			bottomDivider
 			chevron
